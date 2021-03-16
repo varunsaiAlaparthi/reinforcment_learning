@@ -57,6 +57,10 @@ class replaymemory():
   def can_provide(self,batch_size):
     return len(self.memory)>=batch_size
 
+def soft_update(local,target,t):
+  for target_param,local_param in zip(target.parameters(),local.parameters()):
+    target_param.data.copy_(t*local_param.data+(1-t)*target_param.data)
+    
 class eps_strat():
   def __init__(self,num_actions,start,decay,end,device):
     self.cur_step=0
@@ -140,9 +144,7 @@ tau=0.89
 t_decay=eps_strat(2,0.9,0.01,0.001,device)
 print(tau)
 
-def soft_update(local,target,t):
-  for target_param,local_param in zip(target.parameters(),local.parameters()):
-    target_param.data.copy_(t*local_param.data+(1-t)*target_param.data)
+
 
 FILE='/content/drive/MyDrive/chrome_dino/target_net.pth'
 File='/content/drive/MyDrive/chrome_dino/model.pth'
